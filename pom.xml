@@ -9,9 +9,11 @@
     <version>1.5.0</version>
     <description>The Amazon Kinesis Client Library for Java enables Java developers to easily consume and process data from Amazon Kinesis.</description>
     <url>https://aws.amazon.com/kinesis</url>
-
+    
     <scm>
-        <url>https://github.com/awslabs/amazon-kinesis-client.git</url>
+        <connection>scm:git:ssh://git@github.com:atlassian/amazon-kinesis-client.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:atlassian/amazon-kinesis-client.git</developerConnection>
+        <url>https://github.com/atlassian/amazon-kinesis-client</url>
     </scm>
 
     <licenses>
