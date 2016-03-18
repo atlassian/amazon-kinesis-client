@@ -128,6 +128,7 @@ public class KinesisClientLibConfiguration {
     public static final boolean DEFAULT_VALIDATE_SEQUENCE_NUMBER_BEFORE_CHECKPOINTING = true;
 
     private String applicationName;
+    private String tableName;
     private String streamName;
     private String kinesisEndpoint;
     private InitialPositionInStream initialPositionInStream;
@@ -269,6 +270,7 @@ public class KinesisClientLibConfiguration {
         checkIsValuePositive("MetricsMaxQueueSize", (long) metricsMaxQueueSize);
         checkIsRegionNameValid(regionName);
         this.applicationName = applicationName;
+        this.tableName = applicationName;
         this.streamName = streamName;
         this.kinesisEndpoint = kinesisEndpoint;
         this.initialPositionInStream = initialPositionInStream;
@@ -329,6 +331,13 @@ public class KinesisClientLibConfiguration {
      */
     public String getApplicationName() {
         return applicationName;
+    }
+
+    /**
+     * @return Name of the table to use in DynamoDB
+     */
+    public String getTableName() {
+        return tableName;
     }
 
     /**
@@ -509,6 +518,15 @@ public class KinesisClientLibConfiguration {
     }
 
     // CHECKSTYLE:IGNORE HiddenFieldCheck FOR NEXT 190 LINES
+    /**
+     * @param tableName name of the lease table in DynamoDB
+     * @return KinesisClientLibConfiguration
+     */
+    public KinesisClientLibConfiguration withTableName(String tableName) {
+        this.tableName = tableName;
+        return this;
+    }
+
     /**
      * @param kinesisEndpoint Kinesis endpoint
      * @return KinesisClientLibConfiguration
