@@ -220,7 +220,7 @@ public class Worker implements Runnable {
                 config.shouldCleanupLeasesUponShardCompletion(),
                 null,
                 new KinesisClientLibLeaseCoordinator(
-                        new KinesisClientLeaseManager(config.getApplicationName(), dynamoDBClient),
+                        new KinesisClientLeaseManager(config.getTableName(), dynamoDBClient),
                         config.getWorkerIdentifier(), config.getFailoverTimeMillis(), config.getEpsilonMillis(),
                         metricsFactory),
                 execService,
@@ -841,7 +841,7 @@ public class Worker implements Runnable {
                     config.getShardSyncIntervalMillis(),
                     config.shouldCleanupLeasesUponShardCompletion(),
                     null,
-                    new KinesisClientLibLeaseCoordinator(new KinesisClientLeaseManager(config.getApplicationName(),
+                    new KinesisClientLibLeaseCoordinator(new KinesisClientLeaseManager(config.getTableName(),
                             dynamoDBClient),
                             config.getWorkerIdentifier(),
                             config.getFailoverTimeMillis(),
