@@ -4,7 +4,7 @@
     <artifactId>amazon-kinesis-client</artifactId>
     <packaging>jar</packaging>
     <name>Amazon Kinesis Client Library for Java</name>
-    <version>1.6.1-atlassian-2-SNAPSHOT</version>
+    <version>1.6.1-atlassian-2</version>
     <description>The Amazon Kinesis Client Library for Java enables Java developers to easily consume and process data from Amazon Kinesis.</description>
     <url>https://aws.amazon.com/kinesis</url>
     
@@ -12,7 +12,7 @@
         <connection>scm:git:ssh://git@github.com/atlassian/amazon-kinesis-client.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/atlassian/amazon-kinesis-client.git</developerConnection>
         <url>https://github.com/atlassian/amazon-kinesis-client</url>
-      <tag>HEAD</tag>
+      <tag>amazon-kinesis-client-1.6.1-atlassian-2</tag>
   </scm>
 
     <licenses>
