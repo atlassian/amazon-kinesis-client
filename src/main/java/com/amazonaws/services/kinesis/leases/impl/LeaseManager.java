@@ -104,21 +104,17 @@ public class LeaseManager<T extends Lease> implements ILeaseManager<T> {
         verifyNotNull(readCapacity, "readCapacity cannot be null");
         verifyNotNull(writeCapacity, "writeCapacity cannot be null");
 
-        boolean tableDidNotExist = true;
-
-        // First, attempt to describe the table and short-circuit if it already existed
         try {
-            dynamoDBClient.describeTable(table);
-            return false;
-        } catch (ResourceNotFoundException e) {
-            tableDidNotExist = true;
-        } catch (AmazonClientException e) {
-            // In order to insulate ourselves from failures specific to DescribeTable, we swallow this exception;
-            // we can still rely on CreateTable request failing if present.
-            LOG.error("Failed to retrieve table description for table " + table, e);
+            if (tableStatus() != null) {
+                return false;
+            }
+        } catch (DependencyException de) {
+            //
+            // Something went wrong with DynamoDB
+            //
+            LOG.error("Failed to get table status for " + table, de);
         }
 
-        // We believe the table does not exist, so we proceed to creating it
         CreateTableRequest request = new CreateTableRequest();
         request.setTableName(table);
         request.setKeySchema(serializer.getKeySchema());
@@ -132,14 +128,14 @@ public class LeaseManager<T extends Lease> implements ILeaseManager<T> {
         try {
             dynamoDBClient.createTable(request);
         } catch (ResourceInUseException e) {
-            tableDidNotExist = false;
             LOG.info("Table " + table + " already exists.");
+            return false;
         } catch (LimitExceededException e) {
             throw new ProvisionedThroughputException("Capacity exceeded when creating table " + table, e);
         } catch (AmazonClientException e) {
             throw new DependencyException(e);
         }
-        return tableDidNotExist;
+        return true;
     }
 
     /**
@@ -147,6 +143,10 @@ public class LeaseManager<T extends Lease> implements ILeaseManager<T> {
      */
     @Override
     public boolean leaseTableExists() throws DependencyException {
+        return TableStatus.ACTIVE == tableStatus();
+    }
+
+    private TableStatus tableStatus() throws DependencyException {
         DescribeTableRequest request = new DescribeTableRequest();
 
         request.setTableName(table);
@@ -159,19 +159,17 @@ public class LeaseManager<T extends Lease> implements ILeaseManager<T> {
                 LOG.debug(String.format("Got ResourceNotFoundException for table %s in leaseTableExists, returning false.",
                         table));
             }
-
-            return false;
+            return null;
         } catch (AmazonClientException e) {
             throw new DependencyException(e);
         }
 
-        String tableStatus = result.getTable().getTableStatus();
-
+        TableStatus tableStatus = TableStatus.fromValue(result.getTable().getTableStatus());
         if (LOG.isDebugEnabled()) {
             LOG.debug("Lease table exists and is in status " + tableStatus);
         }
 
-        return TableStatus.ACTIVE.name().equals(tableStatus);
+        return tableStatus;
     }
 
     @Override

@@ -2,3 +2,4 @@
 .idea/
 target/
 AwsCredentials.properties
+.idea
